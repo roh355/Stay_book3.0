@@ -1,0 +1,43 @@
+{
+  "name": "staybook",
+  "version": "0.0.0",
+  "description": "StayBook — a room-booking demo (conference time-slots + hostel nights) with an interactive 3D building.",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "server": "node server/index.js",
+    "dev": "concurrently -n api,web -c blue,magenta \"npm run server\" \"npm start\"",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development"
+  },
+  "private": true,
+  "packageManager": "npm@10.9.8",
+  "dependencies": {
+    "@angular/animations": "^22.0.5",
+    "@angular/cdk": "^22.0.3",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/material": "^22.0.3",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/router": "^22.0.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^4.22.2",
+    "jsonwebtoken": "^9.0.3",
+    "rxjs": "~7.8.0",
+    "three": "^0.185.1",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.0.5",
+    "@angular/cli": "^22.0.5",
+    "@angular/compiler-cli": "^22.0.0",
+    "@types/three": "^0.185.0",
+    "concurrently": "^9.2.1",
+    "prettier": "^3.8.1",
+    "puppeteer-core": "^23.11.1",
+    "typescript": "~6.0.2"
+  }
+}
