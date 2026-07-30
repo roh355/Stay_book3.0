@@ -24,8 +24,10 @@
     "@angular/router": "^22.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^4.22.2",
     "jsonwebtoken": "^9.0.3",
+    "pg": "^8.22.0",
     "rxjs": "~7.8.0",
     "three": "^0.185.1",
     "tslib": "^2.3.0"
@@ -34,6 +36,7 @@
     "@angular/build": "^22.0.5",
     "@angular/cli": "^22.0.5",
     "@angular/compiler-cli": "^22.0.0",
+    "@types/pg": "^8.20.0",
     "@types/three": "^0.185.0",
     "concurrently": "^9.2.1",
     "prettier": "^3.8.1",

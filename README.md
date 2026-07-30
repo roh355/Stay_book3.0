@@ -5,11 +5,12 @@ A room-booking demo with two modes:
 - **Conferences** — book Skyline Conference Center rooms by half-hour slots (08:00–20:00).
 - **Hostels** — book Skyline Residences by night across a 60-day horizon.
 
-Features an interactive **Three.js building**, top-down floor plans, light/dark themes, JWT auth, and SQLite persistence.
+Features an interactive **Three.js building**, top-down floor plans, light/dark themes, JWT auth, and Neon Postgres persistence.
 
 ## Quick start
 
 ```bash
+cp .env.example .env   # then set DATABASE_URL to your Neon connection string
 npm install
 npm run dev
 ```
@@ -19,7 +20,7 @@ This starts both:
 - **API** at `http://localhost:3001`
 - **Web** at `http://localhost:4200` (proxies `/api` → the API)
 
-Both must be running — without the API, floors show “No rooms on this floor”.
+Both must be running — without the API, floors show “No rooms on this floor”. On first boot the API applies `server/schema.sql` and seeds demo data if the database is empty.
 
 ## Demo account
 
@@ -60,7 +61,7 @@ On conference/hostel views (when not typing in an input):
 | Layer | Stack |
 |-------|-------|
 | Frontend | Angular 22 (standalone, signals, OnPush), Angular Material 22, Three.js 0.185 |
-| Backend | Node.js 22+, Express 4, SQLite (`node:sqlite`) |
+| Backend | Node.js 22+, Express 4, Postgres via Neon (`pg`) |
 | Auth | bcryptjs + JWT (7-day TTL) |
 
 ## Scripts
@@ -74,4 +75,9 @@ On conference/hostel views (when not typing in an input):
 
 ## Environment
 
-Optional: set `STAYBOOK_JWT_SECRET` for production JWT signing (defaults to a dev secret).
+Copy `.env.example` to `.env` and set:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | Neon Postgres connection string (`?sslmode=require`) |
+| `STAYBOOK_JWT_SECRET` | No | JWT signing secret (defaults to a dev secret) |

@@ -47,3 +47,6 @@ Thumbs.db
 /server/staybook.db
 /server/staybook.db-*
 /.tooling
+.env
+.env.local
+.env.*.local

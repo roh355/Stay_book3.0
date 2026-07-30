@@ -1,6 +1,6 @@
--- StayBook schema. Deliberately denormalized: every row is self-describing so
--- reads never need a join (room rows inline building name + floor label;
--- booking/stay rows inline room_code and user_name).
+-- StayBook schema (Postgres / Neon). Deliberately denormalized: every row is
+-- self-describing so reads never need a join (room rows inline building name +
+-- floor label; booking/stay rows inline room_code and user_name).
 
 CREATE TABLE IF NOT EXISTS users (
   id            TEXT PRIMARY KEY,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS buildings (
 
 CREATE TABLE IF NOT EXISTS rooms (
   id            TEXT PRIMARY KEY,
-  building_id   TEXT NOT NULL,
+  building_id   TEXT NOT NULL REFERENCES buildings (id),
   building_kind TEXT NOT NULL,
   building_name TEXT NOT NULL,
   floor_number  INTEGER NOT NULL,       -- 1-based
@@ -30,45 +30,40 @@ CREATE TABLE IF NOT EXISTS rooms (
   capacity      INTEGER NOT NULL,
   natural_light INTEGER NOT NULL DEFAULT 0,
   video_conf    INTEGER NOT NULL DEFAULT 0,
-  whiteboard    INTEGER NOT NULL DEFAULT 0,
-  FOREIGN KEY (building_id) REFERENCES buildings (id)
+  whiteboard    INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS bookings (
   id          TEXT PRIMARY KEY,
-  room_id     TEXT NOT NULL,
+  room_id     TEXT NOT NULL REFERENCES rooms (id),
   building_id TEXT NOT NULL,
   room_code   TEXT NOT NULL,
-  date        TEXT NOT NULL,            -- yyyy-mm-dd
+  "date"      TEXT NOT NULL,            -- yyyy-mm-dd (quoted: date is reserved)
   start_slot  INTEGER NOT NULL,         -- inclusive
   end_slot    INTEGER NOT NULL,         -- exclusive
   topic       TEXT,
-  user_id     TEXT NOT NULL,
+  user_id     TEXT NOT NULL REFERENCES users (id),
   user_name   TEXT NOT NULL,
   status      TEXT NOT NULL DEFAULT 'pending',
   notified_rejected INTEGER NOT NULL DEFAULT 0,
-  created_at  TEXT NOT NULL,
-  FOREIGN KEY (room_id) REFERENCES rooms (id),
-  FOREIGN KEY (user_id) REFERENCES users (id)
+  created_at  TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS stays (
   id          TEXT PRIMARY KEY,
-  room_id     TEXT NOT NULL,
+  room_id     TEXT NOT NULL REFERENCES rooms (id),
   building_id TEXT NOT NULL,
   room_code   TEXT NOT NULL,
   check_in    TEXT NOT NULL,            -- yyyy-mm-dd, inclusive
   check_out   TEXT NOT NULL,            -- yyyy-mm-dd, exclusive
   guest       TEXT,
-  user_id     TEXT NOT NULL,
+  user_id     TEXT NOT NULL REFERENCES users (id),
   user_name   TEXT NOT NULL,
   status      TEXT NOT NULL DEFAULT 'pending',
   notified_rejected INTEGER NOT NULL DEFAULT 0,
-  created_at  TEXT NOT NULL,
-  FOREIGN KEY (room_id) REFERENCES rooms (id),
-  FOREIGN KEY (user_id) REFERENCES users (id)
+  created_at  TEXT NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_rooms_building ON rooms (building_id);
-CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings (date);
+CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings ("date");
 CREATE INDEX IF NOT EXISTS idx_stays_room ON stays (room_id);
