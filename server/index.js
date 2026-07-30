@@ -1,6 +1,8 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const express = require('express');
 const cors = require('cors');
 
@@ -18,6 +20,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(attachUser);
+
+// Angular production build (ng build → dist/staybook/browser)
+const distDir = path.join(__dirname, '..', 'dist', 'staybook', 'browser');
 
 // ---------- mappers ----------
 function mapRoom(row) {
@@ -416,13 +421,22 @@ app.get('/api/bookings/rejected/poll', requireAuth, async (req, res) => {
   }
 });
 
+// ---------- static SPA (production / Render) ----------
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir, { index: false }));
+  app.get(/^(?!\/api(?:\/|$)).*/, (_req, res) => {
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
+
 // ---------- boot ----------
 async function boot() {
   await init();
   await seed();
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
-    console.log(`[staybook] API listening on http://localhost:${PORT}`);
+    const mode = fs.existsSync(distDir) ? 'API + web' : 'API only';
+    console.log(`[staybook] ${mode} listening on http://localhost:${PORT}`);
   });
 }
 
